@@ -121,17 +121,17 @@ class MainScene extends Phaser.Scene {
     this.moneyLabel = this.add.text(16, 16, 'Caixa: ' + this.money + 'K', {fontSize: '16px', fill: '#000'});
     this.calendarLabel = this.add.text(170, 16, this.day + ' ' + this.month, {fontSize: '16px', fill: '#fff'});
     this.votesLabel = this.add.text(280, 16, 'Votos: '+ this.votesPercentage + '%', { fontSize: '16px', fill: '#000' });
-    this.text1Label = this.add.text(50, 450, '1');
-    this.text2Label = this.add.text(50, 470, '2');
+    this.text1Label = this.add.text(50, 350, '1');
+    this.text2Label = this.add.text(50, 370, '2');
 
     // buttons
-    this.button1 = this.add.text(50, 520, 'B1', { fill: '#fff', backgroundColor: '#000' });
+    this.button1 = this.add.text(50, 420, 'B1', { fill: '#fff', backgroundColor: '#000' });
     this.button1.setInteractive()
     .on('pointerdown', this.button1Click, this)
     .on('pointerover', this.button1HoverIn, this)
     .on('pointerout', this.button1HoverOut, this);
 
-    this.button2 = this.add.text(50, 560, 'B2', { fill: '#fff', backgroundColor: '#000' });
+    this.button2 = this.add.text(50, 460, 'B2', { fill: '#fff', backgroundColor: '#000' });
     this.button2.setInteractive()
     .on('pointerdown', this.button2Click, this)
     .on('pointerover', this.button2HoverIn, this)
@@ -208,7 +208,7 @@ class MainScene extends Phaser.Scene {
       this.currentCard = this.nextCard();
 
       // update UI
-      this.cardImage = this.add.image(200, 300, this.currentCard.image);
+      this.cardImage = this.add.image(200, 200, this.currentCard.image);
       this.text1Label.setText(this.currentCard.text1);
       this.text2Label.setText(this.currentCard.text2);
       this.button1.setText(this.currentCard.option1);
