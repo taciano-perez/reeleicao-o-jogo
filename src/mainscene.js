@@ -41,11 +41,11 @@ class MainScene extends Phaser.Scene {
 
     // load cards
     const card0 = {
-      text1: 'Sr. Candidato, vamos começar',
-      text2: 'a campanha?',
+      text1: 'Candidato, você tem até 7/Out',
+      text2: 'para conseguir 51% dos votos!',
       image: 'card0',
-      option1: 'Bora!',
-      option2: "Mas já?.",
+      option1: 'O povo me carregará nos braços',
+      option2: "Vou arrasar meus oponentes.",
       money1: 0,
       votes1: 0,
       money2: 0,
