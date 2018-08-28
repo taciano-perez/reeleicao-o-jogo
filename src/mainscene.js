@@ -10,6 +10,9 @@ class MainScene extends Phaser.Scene {
       this.load.image('card2', 'src/assets/card2.jpg');
       this.load.image('card3', 'src/assets/card3.jpg');
       this.load.image('card4', 'src/assets/card4.jpg');
+      this.load.image('card5', 'src/assets/card5.jpg');
+      this.load.image('card6', 'src/assets/card6.jpg');
+      this.load.image('gameover', 'src/assets/gameover.jpg');
   }
 
   /** Creates game */
@@ -41,8 +44,8 @@ class MainScene extends Phaser.Scene {
 
     // load cards
     const card0 = {
-      text1: 'Candidato, você tem até 7/Out',
-      text2: 'para conseguir 51% dos votos!',
+      text1: 'Você tem até 7/Out para ter 51%',
+      text2: 'dos votos sem zerar o caixa.',
       image: 'card0',
       option1: 'O povo me carregará nos braços',
       option2: "Vou arrasar meus oponentes.",
@@ -65,7 +68,7 @@ class MainScene extends Phaser.Scene {
       money2: 100,
       votes2: -10,
       enables1: [],
-      enables2: []
+      enables2: [ 5 ]
     };
 
     const card2 = {
@@ -75,9 +78,9 @@ class MainScene extends Phaser.Scene {
       option1: 'Não tenho nada a ver com isso.',
       option2: "Peço desculpas à nação.",
       money1: 0,
-      votes1: -5,
+      votes1: -20,
       money2: 0,
-      votes2: -2,
+      votes2: -10,
       enables1: [],
       enables2: []
     };
@@ -89,7 +92,7 @@ class MainScene extends Phaser.Scene {
       option1: 'Mentira do seu jornal!',
       option2: "Olha seu safado...",
       money1: 0,
-      votes1: -5,
+      votes1: -2,
       money2: 0,
       votes2: -2,
       enables1: [],
@@ -110,8 +113,37 @@ class MainScene extends Phaser.Scene {
       enables2: []
     };
 
+    const card5 = {
+      text1: 'O PMDB insiste em nomear seu vice,',
+      text2: 'ou sai da chapa.',
+      image: 'card5',
+      option1: 'Sua proposta muito me honra.',
+      option2: "Quem manda aqui sou eu.",
+      money1: 50,
+      votes1: -5,
+      money2: -100,
+      votes2: 5,
+      enables1: [ 6 ],
+      enables2: []
+    };
 
-    this.cards = [ card0, card1, card2, card3, card4 ];
+    const card6 = {
+      text1: 'Seu vice convenceu a coligação',
+      text2: 'a lhe expulsar da chapa!',
+      image: 'card6',
+      option1: 'O que é isso, companheiro?',
+      option2: "É golpe!!!",
+      money1: -100,
+      votes1: -50,
+      money2: -100,
+      votes2: -40,
+      enables1: [],
+      enables2: []
+    };
+	
+	
+
+    this.cards = [ card0, card1, card2, card3, card4, card5, card6 ];
     this.enabledCards = [ 0 ];
 
     // background
@@ -156,6 +188,7 @@ class MainScene extends Phaser.Scene {
     this.button2.setText('');
     this.moneyLabel.setText(`Caixa: ${this.money}K`);
     this.votesLabel.setText(`Votos: ${this.votesPercentage}%`);
+	this.cardImage = this.add.image(200, 200, 'gameover');
 
     if (this.votesPercentage >= 51)
     {
@@ -222,8 +255,16 @@ class MainScene extends Phaser.Scene {
   /** Updates the money and votes score based on player decision */
   updateScore(moneyDelta, votesDelta)
   {
-    this.money = this.money + moneyDelta;
     this.votesPercentage = this.votesPercentage + votesDelta;
+	if (this.votesPercentage < 0)
+	{
+		this.votesPercentage = 0;
+	}
+    this.money = this.money + moneyDelta;
+	if (this.money <= 0)
+	{
+		this.endGame();
+	}
   }
 
   /** Enables new cards based on player decision */
