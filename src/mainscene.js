@@ -12,6 +12,7 @@ class MainScene extends Phaser.Scene {
       this.load.image('card4', 'src/assets/card4.jpg');
       this.load.image('card5', 'src/assets/card5.jpg');
       this.load.image('card6', 'src/assets/card6.jpg');
+      this.load.image('card7', 'src/assets/card7.jpg');
       this.load.image('gameover', 'src/assets/gameover.jpg');
   }
 
@@ -53,8 +54,8 @@ class MainScene extends Phaser.Scene {
       votes1: 0,
       money2: 0,
       votes2: 0,
-      enables1: [1, 2, 3, 4],
-      enables2: [1, 2, 3, 4]
+      enables1: [1, 2, 3, 4, 7],
+      enables2: [1, 2, 3, 4, 7]
     };
 
     const card1 = {
@@ -140,10 +141,23 @@ class MainScene extends Phaser.Scene {
       enables1: [],
       enables2: []
     };
-	
+
+    const card7 = {
+      text1: 'Tem um japonês batendo na porta.',
+      text2: '',
+      image: 'card7',
+      option1: 'Minha vida é um livro aberto.',
+      option2: "Não reconheço esse mandado.",
+      money1: 0,
+      votes1: 8,
+      money2: 0,
+      votes2: -5,
+      enables1: [],
+      enables2: []
+    };
 	
 
-    this.cards = [ card0, card1, card2, card3, card4, card5, card6 ];
+    this.cards = [ card0, card1, card2, card3, card4, card5, card6, card7 ];
     this.enabledCards = [ 0 ];
 
     // background
