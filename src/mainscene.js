@@ -1,5 +1,10 @@
 /** Main scene of election card game */
 class MainScene extends Phaser.Scene {
+	
+	constructor()
+	{
+		super('MainScene');
+	}
 
   /** Preloads assets */
   preload()
@@ -160,15 +165,35 @@ class MainScene extends Phaser.Scene {
     this.cards = [ card0, card1, card2, card3, card4, card5, card6, card7 ];
     this.enabledCards = [ 0 ];
 
+	// alignment grid
+	this.alignGrid = new AlignGrid({rows:11,cols:11,scene:this});
+
     // background
-    this.add.image(400, 300, 'background');
+    var background = this.add.image(400, 300, 'background');
+	AlignGrid.scaleToGameW(background, 1);
+	AlignGrid.scaleToGameH(background, 1);
+	this.alignGrid.placeAtIndex(60, background);
 
     // labels
     this.moneyLabel = this.add.text(16, 16, 'Caixa: ' + this.money + 'K', {fontSize: '16px', fill: '#000'});
+	this.moneyLabel.setOrigin(0, 0.5);
+	this.alignGrid.placeAtIndex(0, this.moneyLabel);
+
     this.calendarLabel = this.add.text(170, 16, this.day + ' ' + this.month, {fontSize: '16px', fill: '#fff'});
-    this.votesLabel = this.add.text(280, 16, 'Votos: '+ this.votesPercentage + '%', { fontSize: '16px', fill: '#000' });
+	this.calendarLabel.setOrigin(0.5, 0.5);
+	this.alignGrid.placeAtIndex(5, this.calendarLabel);
+
+    this.votesLabel = this.add.text(280, 16, 'Votos: '+ this.votesPercentage + '%', { fontSize: '16px', fill: '#000'});
+	this.votesLabel.setOrigin(1, 0.5);
+	this.alignGrid.placeAtIndex(10, this.votesLabel);
+
     this.text1Label = this.add.text(50, 350, '1');
+	this.text1Label.setOrigin(0.5, 0);
+	this.alignGrid.placeAtIndex(71, this.text1Label);
+	
     this.text2Label = this.add.text(50, 370, '2');
+	this.text2Label.setOrigin(0.5, 1);
+	this.alignGrid.placeAtIndex(82, this.text2Label);
 
     // buttons
     this.button1 = this.add.text(50, 420, 'B1', { fill: '#fff', backgroundColor: '#000' });
@@ -176,18 +201,26 @@ class MainScene extends Phaser.Scene {
     .on('pointerdown', this.button1Click, this)
     .on('pointerover', this.button1HoverIn, this)
     .on('pointerout', this.button1HoverOut, this);
+	this.button1.setOrigin(0.5, 0.5);
+	this.alignGrid.placeAtIndex(93, this.button1);
 
     this.button2 = this.add.text(50, 460, 'B2', { fill: '#fff', backgroundColor: '#000' });
     this.button2.setInteractive()
     .on('pointerdown', this.button2Click, this)
     .on('pointerover', this.button2HoverIn, this)
     .on('pointerout', this.button2HoverOut, this);
+	this.button2.setOrigin(0.5, 0.5);
+	this.alignGrid.placeAtIndex(104, this.button2);
 
-      // start game loop
-      this.flipCard();
+	// DEBUG
+	//this.alignGrid.showNumbers(11, 11, game);
+	
+	
+    // start game loop
+    this.flipCard();
 
   }
-
+  
   update()
   {
     if (this.gameOver)
@@ -203,6 +236,8 @@ class MainScene extends Phaser.Scene {
     this.moneyLabel.setText(`Caixa: ${this.money}K`);
     this.votesLabel.setText(`Votos: ${this.votesPercentage}%`);
 	this.cardImage = this.add.image(200, 200, 'gameover');
+	AlignGrid.scaleToGameW(this.cardImage, .8);
+	this.alignGrid.placeAtIndex(38, this.cardImage);
 
     if (this.votesPercentage >= 51)
     {
@@ -256,6 +291,8 @@ class MainScene extends Phaser.Scene {
 
       // update UI
       this.cardImage = this.add.image(200, 200, this.currentCard.image);
+	  AlignGrid.scaleToGameW(this.cardImage, .7);
+	  this.alignGrid.placeAtIndex(38, this.cardImage);
       this.text1Label.setText(this.currentCard.text1);
       this.text2Label.setText(this.currentCard.text2);
       this.button1.setText(this.currentCard.option1);
