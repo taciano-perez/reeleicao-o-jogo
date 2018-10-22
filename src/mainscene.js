@@ -4,12 +4,14 @@ class MainScene extends Phaser.Scene {
 	constructor()
 	{
 		super('MainScene');
+		this.CONST = new Constants();
 	}
 
   /** Preloads assets */
   preload()
   {
-      this.load.image('background', 'src/assets/sky.png');
+      this.load.image('background3', 'src/assets/background3.png');
+	  this.load.image('opt_button', 'src/assets/opt_button.png');
       this.load.image('card0', 'src/assets/card0.jpg');
       this.load.image('card1', 'src/assets/card1.jpg');
       this.load.image('card2', 'src/assets/card2.jpg');
@@ -45,12 +47,12 @@ class MainScene extends Phaser.Scene {
     this.money = 100;
     this.votesPercentage = 15;
     this.gameOver = false;
-    this.day = 15;
+    this.day = 31;
     this.month = 'Ago';
 
     // load cards
     const card0 = {
-      text1: 'Você tem até 7/Out para ter 51%',
+      text1: 'Você tem '+ (this.day-1) + ' dias para ter 51%',
       text2: 'dos votos sem zerar o caixa.',
       image: 'card0',
       option1: 'O povo me carregará nos braços',
@@ -169,17 +171,17 @@ class MainScene extends Phaser.Scene {
 	this.alignGrid = new AlignGrid({rows:11,cols:11,scene:this});
 
     // background
-    var background = this.add.image(400, 300, 'background');
+    var background = this.add.image(400, 300, 'background3');
 	AlignGrid.scaleToGameW(background, 1);
 	AlignGrid.scaleToGameH(background, 1);
 	this.alignGrid.placeAtIndex(60, background);
 
     // labels
-    this.moneyLabel = this.add.text(16, 16, 'Caixa: ' + this.money + 'K', {fontSize: '16px', fill: '#000'});
+    this.moneyLabel = this.add.text(16, 16, 'Caixa: ' + this.money + 'K', this.CONST.FONT_TEXT);
 	this.moneyLabel.setOrigin(0, 0.5);
 	this.alignGrid.placeAtIndex(0, this.moneyLabel);
 
-    this.calendarLabel = this.add.text(170, 16, this.day + ' ' + this.month, {fontSize: '16px', fill: '#fff'});
+    this.calendarLabel = this.add.text(170, 16, this.day + ' ' + this.month, this.CONST.FONT_TEXT_LIGHT);
 	this.calendarLabel.setOrigin(0.5, 0.5);
 	this.alignGrid.placeAtIndex(5, this.calendarLabel);
 
@@ -187,34 +189,35 @@ class MainScene extends Phaser.Scene {
 	this.votesLabel.setOrigin(1, 0.5);
 	this.alignGrid.placeAtIndex(10, this.votesLabel);
 
-    this.text1Label = this.add.text(50, 350, '1');
+    this.text1Label = this.add.text(50, 350, '1', this.CONST.FONT_TEXT);
 	this.text1Label.setOrigin(0.5, 0);
 	this.alignGrid.placeAtIndex(71, this.text1Label);
 	
-    this.text2Label = this.add.text(50, 370, '2');
+    this.text2Label = this.add.text(50, 370, '2', this.CONST.FONT_TEXT);
 	this.text2Label.setOrigin(0.5, 1);
 	this.alignGrid.placeAtIndex(82, this.text2Label);
 
     // buttons
-    this.button1 = this.add.text(50, 420, 'B1', { fill: '#fff', backgroundColor: '#000' });
-    this.button1.setInteractive()
-    .on('pointerdown', this.button1Click, this)
-    .on('pointerover', this.button1HoverIn, this)
-    .on('pointerout', this.button1HoverOut, this);
-	this.button1.setOrigin(0.5, 0.5);
+	this.button1 = new TextButton({
+		scene: this,
+		key: 'opt_button',
+		text: 'B1',
+		textConfig: this.CONST.FONT_TEXT_LIGHT,
+		event: this.button1Click
+	});
 	this.alignGrid.placeAtIndex(93, this.button1);
 
-    this.button2 = this.add.text(50, 460, 'B2', { fill: '#fff', backgroundColor: '#000' });
-    this.button2.setInteractive()
-    .on('pointerdown', this.button2Click, this)
-    .on('pointerover', this.button2HoverIn, this)
-    .on('pointerout', this.button2HoverOut, this);
-	this.button2.setOrigin(0.5, 0.5);
+	this.button2 = new TextButton({
+		scene: this,
+		key: 'opt_button',
+		text: 'B1',
+		textConfig: this.CONST.FONT_TEXT_LIGHT,
+		event: this.button2Click
+	});
 	this.alignGrid.placeAtIndex(104, this.button2);
 
 	// DEBUG
 	//this.alignGrid.showNumbers(11, 11, game);
-	
 	
     // start game loop
     this.flipCard();
@@ -232,7 +235,9 @@ class MainScene extends Phaser.Scene {
   endGame()
   {
     this.button1.setText('');
+	this.button1.setVisible(false);
     this.button2.setText('');
+	this.button2.setVisible(false);
     this.moneyLabel.setText(`Caixa: ${this.money}K`);
     this.votesLabel.setText(`Votos: ${this.votesPercentage}%`);
 	this.cardImage = this.add.image(200, 200, 'gameover');
@@ -255,8 +260,7 @@ class MainScene extends Phaser.Scene {
 
   updateDate()
   {
-    this.day = this.day + 1;
-    // TODO: update month
+    this.day = this.day - 1;
   }
 
   /** Draws a random card from the enabled card collecion */
@@ -283,7 +287,7 @@ class MainScene extends Phaser.Scene {
     this.updateDate();
 
     // check for end game condition
-    if (this.enabledCards.length == 0) {
+    if (this.enabledCards.length == 0 || this.day == 0) {
       this.endGame();
     } else {
 
@@ -299,7 +303,7 @@ class MainScene extends Phaser.Scene {
       this.button2.setText(this.currentCard.option2);
       this.moneyLabel.setText(`Caixa: ${this.money}K`);
       this.votesLabel.setText(`Votos: ${this.votesPercentage}%`);
-      this.calendarLabel.setText(this.day + ' ' + this.month);
+      this.calendarLabel.setText(this.day + ' dias');
     }
   }
 
